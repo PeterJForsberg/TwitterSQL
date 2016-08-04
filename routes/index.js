@@ -1,7 +1,7 @@
 'use strict';
 var express = require('express');
 var router = express.Router();
-var tweetBank = require('../tweetBank');
+var twitterdb = require('../db');
 
 module.exports = function makeRouterWithSockets (io) {
 
@@ -50,6 +50,12 @@ module.exports = function makeRouterWithSockets (io) {
   // router.get('/stylesheets/style.css', function(req, res, next){
   //   res.sendFile('/stylesheets/style.css', { root: __dirname + '/../public/' });
   // });
+
+  client.query('SELECT * FROM tweets', function (err, result) {
+    if (err) return next(err); // pass errors to Express
+    var tweets = result.rows;
+    res.render('index', { title: 'Twitter.js', tweets: tweets, showForm: true });
+  });
 
   return router;
 }
